@@ -1,0 +1,10 @@
+/*Image Gallery Style*/
+#gallery {
+	overflow: visible;
+}
+#gallery div {
+	position: absolute;
+}
+#gallery img {
+	float: left;
+}

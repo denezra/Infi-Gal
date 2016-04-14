@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Infi-Gal</title>
+	<script src="https://s0.2mdn.net/ads/studio/cached_libs/tweenmax_1.18.0_499ba64a23378545748ff12d372e59e9_min.js"></script>
+	<style>
+		* {
+			position: absolute;
+		}
+		body {
+			margin: 0;
+		}
+		/*.item {
+			width: 250px;
+			height: 250px;
+			background-color: red;
+			margin: 10px 0;
+			position: relative;
+		}*/
+		.arrow-right {
+			right: 0px;
+			bottom: 0px;
+			width: 0; 
+			height: 0; 
+			border-top: 15px solid transparent;
+			border-bottom: 15px solid transparent;
+			
+			border-left: 15px solid green;
+		}
+		.arrow-left {
+			bottom: 0px;
+			width: 0; 
+			height: 0; 
+			border-top: 15px solid transparent;
+			border-bottom: 15px solid transparent; 
+			
+			border-right:15px solid blue; 
+		}
+		#container {
+			width: 350px;
+			height: 300px;
+		}
+		#gallery {
+			background-color: black;
+		}
+	</style>
+	<script>
+		(function(){
+		    var _ = function(a) {return new q(a);},
+		        q = function(a) {
+		        	var b = (typeof a === 'string') ? document.querySelectorAll(a) : a;
+		        	this.a = b;
+					return this;
+		        };  
+		    _.fn = q.prototype = {
+		        off: function(a, b) {
+		        	var i = 0;
+		        	if(this.a.length === 0 || this.a.length === undefined) {
+		        		if(this.a.addEventListener) {this.a.removeEventListener(a, b, false);}else if(this.a.attachEvent) {this.a.detachEvent('on'+a, b);};
+		        	} else {
+			        	for (i = 0; i < this.a.length; i++) {	
+			        		if(this.a[i].addEventListener) {this.a[i].removeEventListener(a, b, false);}else if(this.a[i].attachEvent) {this.a[i].detachEvent('on'+a, b);};
+			        	};
+		        	}
+		        	return this;
+		        },
+		        on:  function(a, b) {
+		        	var i = 0;
+		        	if(this.a.length === 0 || this.a.length === undefined) {
+		        		if(this.a.addEventListener) {this.a.addEventListener(a, b, false);}else if(this.a.attachEvent) {this.a.attachEvent('on'+a, b);}; 
+		        	} else {
+			        	for (i = 0; i < this.a.length; i++) {	
+			        		if(this.a[i].addEventListener) {this.a[i].addEventListener(a, b, false);}else if(this.a[i].attachEvent) {this.a[i].attachEvent('on'+a, b);};  
+			        	}
+		        	}
+		        	return this;
+		        }
+		    };
+		    if(!window._) {window._=_;}
+		})();
+        // Preload 
+		function startPreload(){
+			var ctr = 0, images_arr = new Array(), preArgumentsLength = startPreload.arguments.length-1, preArguments = startPreload.arguments; 
+			for (i = 0; i < preArgumentsLength; i++) {images_arr[i] = new Image(), images_arr[i].src = startPreload.arguments[i], _(images_arr[i]).on('load', imageLoaded);}
+			function imageLoaded(){if(ctr === (preArgumentsLength - 1)){preArguments[preArgumentsLength]();}else{ctr++;}} 
+		}
+	</script>
+</head>
+<body>
+	<div id="container">
+		<div id="gallery"></div>
+
+		<div class="arrow arrow-right" data-direction="right"></div>
+		<div class="arrow arrow-left" data-direction="left"></div>
+	</div>
+	<script>
+		_(window).on('load', function() {
+			var a = ['https://placeholdit.imgix.net/~text?txtsize=33&txt=Image%20One&w=350&h=250', 
+					 'https://placeholdit.imgix.net/~text?txtsize=33&txt=Image%20Two&w=350&h=250',
+					 'https://placeholdit.imgix.net/~text?txtsize=33&txt=Image%20Three&w=350&h=250']
+			insert(a);
+
+			var height, width, img, length, counter = 0;
+
+			function insert(a) {
+				var c, b = a.length;
+				for (c = (b - 1); c >= 0; c--) {
+					img = document.createElement('img');
+					img.setAttribute('draggable', 'false');
+					img.setAttribute('src',a[c]);
+					img.setAttribute('atl','Image '+c);
+					img.setAttribute('id','image'+c);
+					_('#gallery').a[0].appendChild(img);
+					if(c === 0) {
+						_(img).on('load', function() {
+							height 	= img.naturalHeight;
+							width 	= img.naturalWidth;
+							length 	= b;
+							TweenMax.set('#gallery', {width: width, height: height, overflow: 'hidden'});
+						});
+					};
+				};
+			};
+			_('.arrow').on('click', movement)
+			function movement(e) {
+				var a = e.target.dataset.direction, b, c = {};
+				if(a === 'left' || a === 'right') {
+					b = (a === 'left') ? (-width) : (+width); c['x'] = b;
+				} else if(a === 'down' || a === 'up') {
+					b = (a === 'down') ? (+height) : (-height); c['y'] = b;
+				}
+				c['onStart'] = moveNext, c['onStartParams'] = [a];
+				TweenMax.to(_('#image'+counter).a[0], 0.5, c);
+				function moveNext(a) {
+					var b, d = {};
+					if(a === 'left' || a === 'right') {
+						b = (a === 'left') ? (+width) : (-width); d['x'] = b;
+					} else if(a === 'down' || a === 'up') {
+						b = (a === 'down') ? (-height) : (+height); d['y'] = b;
+					}
+					c['onStart'] = c['onStartParams'] = null;
+
+					if(a === 'left' || a === 'up') {
+						counter = counter - 1;
+						if(counter <= 0) {
+							counter = length - 1;
+						}
+					} else if(a === 'down' || a === 'right') {
+						counter = counter + 1;
+						if(counter >= length) {
+							counter = 0;
+						};
+					};
+					// if((counter+1) >= length) {
+					// 	counter = 0;
+					// 	c['css'] = {x: 0, y:0};
+					// } else if(counter ) {
+					// } else {
+					// 	counter = counter+1;
+					// }
+					console.log('counter ',counter, '  ', _('#image'+counter).a[0]);
+					TweenMax.set(_('#image'+counter).a[0], d);
+					TweenMax.to(_('#image'+counter).a[0], 0.22, {x: 0, y:0});
+				}
+			};
+		});
+	</script>
+</body>
+</html>

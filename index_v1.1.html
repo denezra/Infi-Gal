@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Infi-Gal</title>
+	<script src="tweenmax_1.18.0_499ba64a23378545748ff12d372e59e9_min.js"></script>
+	<link rel="stylesheet" href="gallery.css">
+	<style>
+		body {
+			margin: 0;
+		}
+		/*.item {
+			width: 250px;
+			height: 250px;
+			background-color: red;
+			margin: 10px 0;
+			position: relative;
+		}*/
+		.arrow-right {
+			right: 0px;
+			bottom: 0px;
+			width: 0; 
+			height: 0; 
+			border-top: 15px solid transparent;
+			border-bottom: 15px solid transparent;
+			
+			border-left: 15px solid green;
+		}
+		.arrow-left {
+			bottom: 0px;
+			width: 0; 
+			height: 0; 
+			border-top: 15px solid transparent;
+			border-bottom: 15px solid transparent; 
+			
+			border-right:15px solid blue; 
+		}
+		#container {
+			position: absolute;
+			width: 350px;
+			height: 300px;
+			margin: 200px 350px;
+		}
+		#gallery {
+			position: absolute;
+		}
+		.arrow {
+			position: absolute;
+		}
+		
+	</style>
+	<script>
+		(function(){
+		    var _ = function(a) {return new q(a);},
+		        q = function(a) {
+		        	var b = (typeof a === 'string') ? document.querySelectorAll(a) : a;
+		        	this.a = b;
+					return this;
+		        };  
+		    _.fn = q.prototype = {
+		        off: function(a, b) {
+		        	var i = 0;
+		        	if(this.a.length === 0 || this.a.length === undefined) {
+		        		if(this.a.addEventListener) {this.a.removeEventListener(a, b, false);}else if(this.a.attachEvent) {this.a.detachEvent('on'+a, b);};
+		        	} else {
+			        	for (i = 0; i < this.a.length; i++) {	
+			        		if(this.a[i].addEventListener) {this.a[i].removeEventListener(a, b, false);}else if(this.a[i].attachEvent) {this.a[i].detachEvent('on'+a, b);};
+			        	};
+		        	}
+		        	return this;
+		        },
+		        on:  function(a, b) {
+		        	var i = 0;
+		        	if(this.a.length === 0 || this.a.length === undefined) {
+		        		if(this.a.addEventListener) {this.a.addEventListener(a, b, false);}else if(this.a.attachEvent) {this.a.attachEvent('on'+a, b);}; 
+		        	} else {
+			        	for (i = 0; i < this.a.length; i++) {	
+			        		if(this.a[i].addEventListener) {this.a[i].addEventListener(a, b, false);}else if(this.a[i].attachEvent) {this.a[i].attachEvent('on'+a, b);};  
+			        	}
+		        	}
+		        	return this;
+		        },
+		        way: function(a, b) {
+		        	for(var b in a) {
+							if (a.hasOwnProperty(b)) {
+								this.c.style[b] = a[b];
+							};
+						};
+						return this;
+		        }
+		    };
+		    if(!window._) {window._=_;}
+		})();
+        // Preload 
+		function startPreload(){
+			var ctr = 0, images_arr = new Array(), preArgumentsLength = startPreload.arguments.length-1, preArguments = startPreload.arguments; 
+			for (i = 0; i < preArgumentsLength; i++) {images_arr[i] = new Image(), images_arr[i].src = startPreload.arguments[i], _(images_arr[i]).on('load', imageLoaded);}
+			function imageLoaded(){if(ctr === (preArgumentsLength - 1)){preArguments[preArgumentsLength]();}else{ctr++;}} 
+		}
+	</script>
+</head>
+<body>
+	<div id="container">
+		<div id="gallery"></div>
+
+		<div class="arrow arrow-right" data-direction="right"></div>
+		<div class="arrow arrow-left" data-direction="left"></div>
+	</div>
+	<script>
+		_(window).on('load', function() {
+			var a = ['image-one.jpg', 
+					 'image-two.jpg',
+					 'image-three.jpg',
+					 'image-four.jpg']
+			insert(a);
+
+			// _('.arrow').on('click', movement);
+
+			var height, width, length, counter = 1, duration = 0.5, number = 1;
+
+			function insert(a) {
+				var c, b = a.length, d, e = document.createElement('div');
+				for (c = 0; c < b; c++) {
+					d = document.createElement('img');
+					d.setAttribute('draggable', 'false');
+					d.setAttribute('src',a[c]);
+					d.setAttribute('atl','Image '+c);
+					d.setAttribute('id','image'+c);
+					e.appendChild(d);
+					if(c === 1) {
+						_(d).on('load', function() {
+							height 	= d.naturalHeight;
+							width 	= d.naturalWidth;
+							length 	= b;
+							e.setAttribute('id','img-container'+number);
+							_('#gallery').a[0].appendChild(e);
+							TweenMax.set('#gallery', {width: width, height: height});
+							TweenMax.set(e, {width: (width * 4), height: height});
+						});
+					}
+				};
+			};
+
+			function movement(e) {
+				var a = e.target.dataset.direction, x = y = 0;
+				if(a === 'left' || a === 'right') {
+					x = (a === 'left') ? (+width) : (-width);
+				} else if(a === 'down' || a === 'up') {
+					y = (a === 'down') ? (-height) : (+height);
+				};
+				TweenMax.to(_('#image'+counter).a[0], duration, {x: x, y: y});
+				if(a === 'left' || a === 'up') {
+					counter = counter - 1;if(counter < 1) counter = length;
+				} else if(a === 'down' || a === 'right') {
+					counter = counter + 1;if(counter > length) counter = 1;
+				};
+				TweenMax.set(_('#image'+counter).a[0], {x: -(x), y: -(y)})
+				TweenMax.to(_('#image'+counter).a[0], duration, {x: 0, y: 0});
+			};
+		});
+	</script>
+</body>
+</html>

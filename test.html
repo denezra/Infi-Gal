@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+		#container {
+			width: 300px;
+			height: 250px;
+			background-color: red;
+		}
+		.container {
+			width: 300px;
+			height: 300px;
+			overflow: hidden;
+		}
+		.img-container {
+			width: 1200px;
+			height: 250px;
+		}
+		img {
+			float: left;
+		}
+		.button  {
+			width: 100px;
+			height: 20px;
+			background-color: yellow;
+			margin: 10px 10px;
+			cursor: pointer;
+		}
+	</style>
+</head>
+<body>
+	<div id="container">
+		
+	</div>
+	<div class="container">
+		<div class="img-container">
+			<img src="image-one.jpg" alt="">
+			<img src="image-two.jpg" alt="">
+			<img src="image-three.jpg" alt="">
+			<img src="image-four.jpg" alt="">
+		</div>
+	</div>
+
+	<div id="cta-1" class="button"></div>
+	<div id="cta-2" class="button"></div>
+	<div id="cta-3" class="button"></div>
+	<script>
+		window.addEventListener('load', function() {
+			var container = document.getElementById('container'), 
+			 	cta_1 = document.getElementById('cta-1'), 
+			 	cta_2 = document.getElementById('cta-2'), 
+			 	cta_3 = document.getElementById('cta-3'), 
+				initialX = 0, finalX = 0, downTrack = false;
+
+			container.addEventListener('mousedown', downEvent)
+			container.addEventListener('mousemove', moveEvent)
+			container.addEventListener('mouseup', 	upEvent)
+			container.addEventListener('mouseout', 	upEvent)
+
+			cta_1.addEventListener('click', clickEvent)
+			cta_2.addEventListener('click', clickEvent)
+			cta_3.addEventListener('click', clickEvent)
+
+			function downEvent(e) {
+
+				// console.log(e.clientX)
+				initialX = e.clientX;
+				downTrack = true;
+			}
+
+			function moveEvent(e) {
+				if(downTrack) {
+					finalX = e.clientX - initialX;
+					console.log(finalX/300);
+				}
+			}
+
+			function upEvent(e) {
+				downTrack = false;
+			}
+
+			function clickEvent() {
+				var a = this.id;
+				switch(a) {
+					case 'cta-1': 
+						console.log('Button 1 Clicked');
+						break;
+					case 'cta-2': 
+						console.log('Button 2 Clicked');
+						break;
+					case 'cta-3': 
+						console.log('Button 3 Clicked');
+						break;
+				}
+			}
+		});
+	</script>
+</body>
+</html>
